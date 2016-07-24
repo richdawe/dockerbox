@@ -31,4 +31,6 @@
 
 - name: "Hello World!"
   command: docker run hello-world
+  register: hello_world
 
+- debug: var=hello_world.stdout_lines

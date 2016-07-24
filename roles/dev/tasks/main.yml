@@ -1,0 +1,7 @@
+---
+- name: "Requestbin pre-req: apache2-utils"
+  apt: name=apache2-utils state=latest
+
+- name: "Requestbin pre-req: apg"
+  apt: name=apg state=latest
+
