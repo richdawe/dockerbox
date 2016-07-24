@@ -1,0 +1,34 @@
+---
+- name: "Install pre-requisites"
+  apt: name=apt-transport-https state=latest update_cache=yes
+
+- name: "Install CA certs"
+  apt: name=ca-certificates state=latest
+
+- name: "Trust Docker-signed packages"
+  command: apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+- name: "Install Docker source for apt"
+  copy: src=docker.list dest=/etc/apt/sources.list.d/docker.list
+
+- name: "Remove lxc-docker"
+  apt: name=lxc-docker state=absent purge=yes
+
+- name: "Set apt-cache policy to prefer Docker's docker"
+  command: apt-cache policy docker-engine
+
+- name: "Install linux-image-extra"
+  apt: name=linux-image-extra-{{ ansible_kernel }} state=latest
+
+- name: "Install AppArmor"
+  apt: name=apparmor state=latest
+
+- name: "Install Docker"
+  apt: name=docker-engine state=latest update_cache=yes
+
+- name: "Start Docker service"
+  service: name=docker state=started enabled=yes
+
+- name: "Hello World!"
+  command: docker run hello-world
+

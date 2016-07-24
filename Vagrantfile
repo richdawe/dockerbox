@@ -10,7 +10,12 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.network "forwarded_port", guest: 8443, host: 8443
 
-  config.vm.provision "shell", path: "install-docker.sh"
-  config.vm.provision "shell", path: "install-python.sh"
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "playbook.yml"
+    ansible.verbose = "-vv"
+    ansible.install = true
+    # Requires Vagrant >= 1.8.3:
+    ansible.version = "2.1"
+  end
 end
 

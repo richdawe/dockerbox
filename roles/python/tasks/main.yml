@@ -1,0 +1,13 @@
+---
+- name: Install python
+  apt: name=python state=latest
+
+- name: Install python-dev
+  apt: name=python-dev state=latest
+
+- name: Install python-pip
+  apt: name=python-pip state=latest
+
+- name: Install libevent-dev
+  apt: name=libevent-dev state=latest
+
