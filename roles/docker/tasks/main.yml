@@ -26,8 +26,11 @@
 - name: "Install Docker"
   apt: name=docker-engine state=latest update_cache=yes
 
+- name: "Enable Docker service"
+  shell: update-rc.d docker defaults
+
 - name: "Start Docker service"
-  service: name=docker state=started enabled=yes
+  service: name=docker state=started
 
 - name: "Hello World!"
   command: docker run hello-world
