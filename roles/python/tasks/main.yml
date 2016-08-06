@@ -8,6 +8,9 @@
 - name: Install python-pip
   apt: name=python-pip state=latest
 
+- name: Install python-virtualenv
+  apt: name=python-virtualenv state=latest
+
 - name: Install libevent-dev
   apt: name=libevent-dev state=latest
 
