@@ -1,36 +1,45 @@
 ---
 - name: "Install pre-requisites"
-  apt: name=apt-transport-https state=latest update_cache=yes
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - aptitude
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - "linux-image-extra-{{ ansible_kernel }}"
+    - apparmor
 
-- name: "Install CA certs"
-  apt: name=ca-certificates state=latest
+- name: Upgrade all packages to the latest version
+  apt:
+    name: "*"
+    state: latest
+
+- name: "Copy Docker GnuPG key"
+  copy: src=docker.gpg dest=/var/tmp/docker.gpg
 
 - name: "Trust Docker-signed packages"
-  command: apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+  command: apt-key add /var/tmp/docker.gpg
 
-- name: "Install Docker source for apt"
-  copy: src=docker.list dest=/etc/apt/sources.list.d/docker.list
+- name: "Install Docker sources for apt"
+  command: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
 
-- name: "Remove lxc-docker"
-  apt: name=lxc-docker state=absent purge=yes
+- name: "Remove old Docker packages"
+  apt:
+    name: "{{ item }}"
+    state: absent
+    purge: yes
+  with_items:
+    - lxc-docker
+    - docker
+    - docker-engine
+    - docker-io
 
-- name: "Set apt-cache policy to prefer Docker's docker"
-  command: apt-cache policy docker-engine
-
-- name: "Install linux-image-extra"
-  apt: name=linux-image-extra-{{ ansible_kernel }} state=latest
-
-- name: "Install AppArmor"
-  apt: name=apparmor state=latest
-
-- name: "Install Docker"
-  apt: name=docker-engine state=latest update_cache=yes
-
-- name: "Enable Docker service"
-  shell: update-rc.d docker defaults
-
-- name: "Start Docker service"
-  service: name=docker state=started
+- name: "Install Docker CE"
+  apt: name=docker-ce state=latest update_cache=yes
 
 - name: "Hello World!"
   command: docker run hello-world

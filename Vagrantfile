@@ -1,7 +1,7 @@
 Vagrant.configure("2") do |config|
   config.vm.define "dockerbox"
 
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
   config.vm.provider "virtualbox" do |v|
     v.memory = 512
   end
@@ -14,8 +14,6 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "playbook.yml"
     ansible.verbose = "-vv"
     ansible.install = true
-    # Requires Vagrant >= 1.8.3:
-    ansible.version = "2.1"
   end
 end
 
